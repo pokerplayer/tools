@@ -23,7 +23,7 @@
     </style>
 </head>
 <body>
-    <h1>Simple Diff Checker that finds new unique lines</h1>
+    <h1>Simple Diff Checker</h1>
     <div>
         <textarea id="file1" placeholder="Enter or paste content of file 1 here..."></textarea>
         <textarea id="file2" placeholder="Enter or paste content of file 2 here..."></textarea>
@@ -36,22 +36,33 @@
             const file1Content = document.getElementById('file1').value.split('\n').map(line => line.trim());
             const file2Content = document.getElementById('file2').value.split('\n').map(line => line.trim());
 
-            // Create a set from file1Content for quick lookup
+            // Create sets from both files for quick lookup
             const file1Set = new Set(file1Content);
+            const file2Set = new Set(file2Content);
 
-            // Find lines in file2 that are not in file1
-            const differences = file2Content.filter(line => !file1Set.has(line));
+            // Find lines in file2 that are not in file1 (new lines)
+            const newLines = file2Content.filter(line => !file1Set.has(line));
+
+            // Find lines in file1 that are not in file2 (missing lines)
+            const missingLines = file1Content.filter(line => !file2Set.has(line));
 
             // Display the differences
             const outputDiv = document.getElementById('output');
             outputDiv.innerHTML = '<h3>Differences:</h3>';
 
-            if (differences.length > 0) {
-                differences.forEach(diff => {
-                    const diffLine = document.createElement('div');
-                    diffLine.textContent = diff;
-                    diffLine.classList.add('diff');
-                    outputDiv.appendChild(diffLine);
+            if (newLines.length > 0 || missingLines.length > 0) {
+                newLines.forEach(line => {
+                    const newLineDiv = document.createElement('div');
+                    newLineDiv.textContent = 'Added: ' + line;
+                    newLineDiv.classList.add('new-line');
+                    outputDiv.appendChild(newLineDiv);
+                });
+
+                missingLines.forEach(line => {
+                    const missingLineDiv = document.createElement('div');
+                    missingLineDiv.textContent = 'Missing: ' + line;
+                    missingLineDiv.classList.add('missing-line');
+                    outputDiv.appendChild(missingLineDiv);
                 });
             } else {
                 outputDiv.innerHTML += '<p>No differences found.</p>';
