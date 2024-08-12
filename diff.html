@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Diff Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 45%;
+            height: 200px;
+            margin-right: 5%;
+        }
+        #output {
+            margin-top: 20px;
+        }
+        .diff {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simple Diff Checker that finds new unique lines</h1>
+    <div>
+        <textarea id="file1" placeholder="Enter or paste content of file 1 here..."></textarea>
+        <textarea id="file2" placeholder="Enter or paste content of file 2 here..."></textarea>
+    </div>
+    <button onclick="checkDiff()">Check Differences</button>
+    <div id="output"></div>
+
+    <script>
+        function checkDiff() {
+            const file1Content = document.getElementById('file1').value.split('\n').map(line => line.trim());
+            const file2Content = document.getElementById('file2').value.split('\n').map(line => line.trim());
+
+            // Create a set from file1Content for quick lookup
+            const file1Set = new Set(file1Content);
+
+            // Find lines in file2 that are not in file1
+            const differences = file2Content.filter(line => !file1Set.has(line));
+
+            // Display the differences
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = '<h3>Differences:</h3>';
+
+            if (differences.length > 0) {
+                differences.forEach(diff => {
+                    const diffLine = document.createElement('div');
+                    diffLine.textContent = diff;
+                    diffLine.classList.add('diff');
+                    outputDiv.appendChild(diffLine);
+                });
+            } else {
+                outputDiv.innerHTML += '<p>No differences found.</p>';
+            }
+        }
+    </script>
+</body>
+</html>
